@@ -1,0 +1,5 @@
+MANIFEST_VERSION = openstlinux-6.1-yocto-mickledore-mp1-v23.06.21
+KERNEL_DT = ./DeviceTree/MPU_Board_MP157A/kernel
+OPTEE_DT = ./DeviceTree/MPU_Board_MP157A/optee-os
+UBOOT_DT = ./DeviceTree/MPU_Board_MP157A/u-boot
+TFA_DT = ./DeviceTree/MPU_Board_MP157A/tf-a
