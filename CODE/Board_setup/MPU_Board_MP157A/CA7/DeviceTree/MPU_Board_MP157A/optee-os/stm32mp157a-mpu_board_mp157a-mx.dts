@@ -11,6 +11,7 @@
 /dts-v1/;
 #include <dt-bindings/pinctrl/stm32-pinfunc.h>
 #include <dt-bindings/clock/stm32mp1-clksrc.h>
+#include <dt-bindings/soc/stm32mp15-etzpc.h>
 
 #include "stm32mp157.dtsi"
 #include "stm32mp15xa.dtsi"
@@ -23,13 +24,13 @@
 	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.1-yocto-mickledore-mp1-v23.06.21";
 	compatible = "st,stm32mp157a-mpu_board_mp157a-mx", "st,stm32mp157";
 
-	/* !!! log : Warning - no DDR config found: 'memory' node not generated  !!! */
+	memory@c0000000 {
+		device_type = "memory";
+		reg = <0xc0000000 0x10000000>;
 
-	/*
-	memory@??? {
-		reg = < ??? >;
+		/* USER CODE BEGIN memory */
+		/* USER CODE END memory */
 	};
-	*/
 
 	reserved-memory {
 		#address-cells = <1>;
@@ -80,6 +81,45 @@
 	/* USER CODE END pinctrl_z */
 };
 
+&bsec{
+	status = "okay";
+
+	/* USER CODE BEGIN bsec */
+	/* USER CODE END bsec */
+};
+
+&etzpc{
+	status = "okay";
+	st,decprot = <
+	/*"NS_R S_W" peripherals*/
+	DECPROT(STM32MP1_ETZPC_DDRCTRL_ID, DECPROT_NS_R_S_W, DECPROT_LOCK)
+	DECPROT(STM32MP1_ETZPC_DDRPHYC_ID, DECPROT_NS_R_S_W, DECPROT_LOCK)
+	/*"Non Secured" peripherals*/
+	DECPROT(STM32MP1_ETZPC_DMA1_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_DMAMUX_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_ETH_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_QSPI_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_DLYBQ_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	DECPROT(STM32MP1_ETZPC_OTG_ID, DECPROT_NS_RW, DECPROT_UNLOCK)
+	/*"Secured" peripherals*/
+	DECPROT(STM32MP1_ETZPC_STGENC_ID, DECPROT_S_RW, DECPROT_UNLOCK)
+	/*"Mcu Isolation" peripherals*/
+	DECPROT(STM32MP1_ETZPC_DMA2_ID, DECPROT_MCU_ISOLATION, DECPROT_UNLOCK)
+
+	/*Restriction: following IDs are not managed  - please to use User-Section if needed:
+		  STM32MP1_ETZPC_SRAMx_ID  STM32MP1_ETZPC_RETRAM_ID  STM32MP1_ETZPC_BKPSRAM_ID*/
+
+	/* USER CODE BEGIN etzpc_decprot */
+		/*STM32CubeMX generates a basic and standard configuration for ETZPC.
+		Additional device configurations can be added here if needed.
+		"etzpc" node could be also overloaded in "addons" User-Section.*/
+	/* USER CODE END etzpc_decprot */
+	>;
+
+	/* USER CODE BEGIN etzpc */
+	/* USER CODE END etzpc */
+};
+
 &rcc{
 	status = "okay";
 
@@ -88,7 +128,10 @@
 
 	st,clksrc = <
 		CLK_CKPER_DISABLED
+		CLK_QSPI_ACLK
+		CLK_ETH_PLL4P
 		CLK_STGEN_HSI
+		CLK_USBO_PLL4R
 		CLK_MPU_HSI
 		CLK_AXI_HSI
 		CLK_MCU_HSI
@@ -110,10 +153,60 @@
 		DIV(DIV_MCO2, 0)
 	>;
 	st,pll_vco {
+		pll2_vco_800Mhz: pll2-vco-800Mhz {
+			src = < CLK_PLL12_HSI >;
+			divmn = < 3 24 >;
+		};
+		pll4_vco_480Mhz: pll4-vco-480Mhz {
+			src = < CLK_PLL4_HSI >;
+			divmn = < 3 29 >;
+		};
 		/* USER CODE BEGIN rcc_st-pll_vco */
 		/* USER CODE END rcc_st-pll_vco */
 	};
 
+	pll2:st,pll@1 {
+		compatible = "st,stm32mp1-pll";
+		reg = <1>;
+
+		st,pll = < &pll2_cfg1 >;
+
+		pll2_cfg1: pll2_cfg1 {
+			st,pll_vco = < &pll2_vco_800Mhz >;
+			st,pll_div_pqr = < 1 1 0 >;
+		};
+		/* USER CODE BEGIN pll2 */
+		/* USER CODE END pll2 */
+	};
+
+	pll4:st,pll@3 {
+		compatible = "st,stm32mp1-pll";
+		reg = <3>;
+
+		st,pll = < &pll4_cfg1 >;
+
+		pll4_cfg1: pll4_cfg1 {
+			st,pll_vco = < &pll4_vco_480Mhz >;
+			st,pll_div_pqr = < 3 1 24 >;
+		};
+		/* USER CODE BEGIN pll4 */
+		/* USER CODE END pll4 */
+	};
+
+};
+
+&rtc{
+	status = "okay";
+
+	/* USER CODE BEGIN rtc */
+	/* USER CODE END rtc */
+};
+
+&tamp{
+	status = "okay";
+
+	/* USER CODE BEGIN tamp */
+	/* USER CODE END tamp */
 };
 
 /* USER CODE BEGIN addons */

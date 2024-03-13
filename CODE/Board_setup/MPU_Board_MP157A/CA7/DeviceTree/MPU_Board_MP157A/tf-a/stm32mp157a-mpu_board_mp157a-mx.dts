@@ -11,13 +11,13 @@
 /dts-v1/;
 #include <dt-bindings/pinctrl/stm32-pinfunc.h>
 #include <dt-bindings/clock/stm32mp1-clksrc.h>
+#include "stm32mp15-mx.dtsi"
 
 #include "stm32mp157.dtsi"
 #include "stm32mp15xa.dtsi"
 #include "stm32mp15-pinctrl.dtsi"
 #include "stm32mp15xxab-pinctrl.dtsi"
-/* !!! log : Warning - DDR not configured: unknown DDR dtsi  !!! */
-/*#include "???-ddr.dtsi"*/
+#include "stm32mp15-ddr.dtsi"
 
 /* USER CODE BEGIN includes */
 /* USER CODE END includes */
@@ -26,13 +26,13 @@
 	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.1-yocto-mickledore-mp1-v23.06.21";
 	compatible = "st,stm32mp157a-mpu_board_mp157a-mx", "st,stm32mp157";
 
-	/* !!! log : Warning - no DDR config found: 'memory' node not generated  !!! */
+	memory@c0000000 {
+		device_type = "memory";
+		reg = <0xc0000000 0x10000000>;
 
-	/*
-	memory@??? {
-		reg = < ??? >;
+		/* USER CODE BEGIN memory */
+		/* USER CODE END memory */
 	};
-	*/
 
 	/* USER CODE BEGIN root */
 	/* USER CODE END root */
@@ -64,6 +64,29 @@
 }; /*root*/
 
 &pinctrl {
+	sdmmc1_pins_mx: sdmmc1_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('B', 9, AF12)>, /* SDMMC1_D5 */
+					 <STM32_PINMUX('C', 6, AF12)>, /* SDMMC1_D6 */
+					 <STM32_PINMUX('C', 7, AF12)>, /* SDMMC1_D7 */
+					 <STM32_PINMUX('C', 8, AF12)>, /* SDMMC1_D0 */
+					 <STM32_PINMUX('C', 9, AF12)>, /* SDMMC1_D1 */
+					 <STM32_PINMUX('C', 10, AF12)>, /* SDMMC1_D2 */
+					 <STM32_PINMUX('C', 11, AF12)>, /* SDMMC1_D3 */
+					 <STM32_PINMUX('D', 2, AF12)>, /* SDMMC1_CMD */
+					 <STM32_PINMUX('E', 4, AF11)>; /* SDMMC1_D4 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <1>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('C', 12, AF12)>; /* SDMMC1_CK */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <3>;
+		};
+	};
+
 	/* USER CODE BEGIN pinctrl */
 	/* USER CODE END pinctrl */
 };
@@ -81,6 +104,7 @@
 
 	st,clksrc = <
 		CLK_CKPER_DISABLED
+		CLK_SDMMC12_HCLK6
 		CLK_STGEN_HSI
 		CLK_MPU_PLL1P
 		CLK_AXI_HSI
@@ -100,10 +124,37 @@
 		DIV(DIV_MCO2, 0)
 	>;
 	st,pll_vco {
+		pll2_vco_800Mhz: pll2-vco-800Mhz {
+			src = < CLK_PLL12_HSI >;
+			divmn = < 3 24 >;
+		};
 		/* USER CODE BEGIN rcc_st-pll_vco */
 		/* USER CODE END rcc_st-pll_vco */
 	};
 
+	pll2:st,pll@1 {
+		compatible = "st,stm32mp1-pll";
+		reg = <1>;
+
+		st,pll = < &pll2_cfg1 >;
+
+		pll2_cfg1: pll2_cfg1 {
+			st,pll_vco = < &pll2_vco_800Mhz >;
+			st,pll_div_pqr = < 1 1 0 >;
+		};
+		/* USER CODE BEGIN pll2 */
+		/* USER CODE END pll2 */
+	};
+
+};
+
+&sdmmc1{
+	pinctrl-names = "default";
+	pinctrl-0 = <&sdmmc1_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN sdmmc1 */
+	/* USER CODE END sdmmc1 */
 };
 
 /* USER CODE BEGIN addons */

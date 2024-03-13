@@ -1,0 +1,46 @@
+(kicad_sch
+	(version 20231120)
+	(generator "eeschema")
+	(generator_version "8.0")
+	(uuid "f3ea9d94-607a-47f6-8c99-3a9f76bf1608")
+	(paper "A4")
+	(lib_symbols)
+	(sheet
+		(at 195.58 77.47)
+		(size 36.83 34.29)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4333f778-7b74-453b-8b72-0d2d15adaf45")
+		(property "Sheetname" "PWR_Discret"
+			(at 195.58 76.7584 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "PWR_Discret.kicad_sch"
+			(at 195.58 112.3446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(instances
+			(project "MPU_PC_Board"
+				(path "/1c918bbf-8253-49a4-bda1-5ad909bd8f23/4d2d092b-17ea-438b-9072-70292a88c388"
+					(page "3")
+				)
+			)
+		)
+	)
+)

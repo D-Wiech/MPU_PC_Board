@@ -113,13 +113,31 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSIDivValue = RCC_HSI_DIV1;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.PLL2.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL2.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL2.PLLSource = RCC_PLL12SOURCE_HSI;
+  RCC_OscInitStruct.PLL2.PLLM = 4;
+  RCC_OscInitStruct.PLL2.PLLN = 25;
+  RCC_OscInitStruct.PLL2.PLLP = 2;
+  RCC_OscInitStruct.PLL2.PLLQ = 2;
+  RCC_OscInitStruct.PLL2.PLLR = 1;
+  RCC_OscInitStruct.PLL2.PLLFRACV = 0;
+  RCC_OscInitStruct.PLL2.PLLMODE = RCC_PLL_INTEGER;
   RCC_OscInitStruct.PLL3.PLLState = RCC_PLL_NONE;
-  RCC_OscInitStruct.PLL4.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.PLL4.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL4.PLLSource = RCC_PLL4SOURCE_HSI;
+  RCC_OscInitStruct.PLL4.PLLM = 4;
+  RCC_OscInitStruct.PLL4.PLLN = 30;
+  RCC_OscInitStruct.PLL4.PLLP = 4;
+  RCC_OscInitStruct.PLL4.PLLQ = 2;
+  RCC_OscInitStruct.PLL4.PLLR = 25;
+  RCC_OscInitStruct.PLL4.PLLRGE = RCC_PLL4IFRANGE_1;
+  RCC_OscInitStruct.PLL4.PLLFRACV = 0;
+  RCC_OscInitStruct.PLL4.PLLMODE = RCC_PLL_INTEGER;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
